@@ -1,62 +1,114 @@
+// Import necessary modules
 const express = require('express');
-const app = express();
-const port = 8001;
+const mysql = require('mysql2');
 const bodyParser = require('body-parser');
-// Symbols for the cards
-const symbols = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
-// Total number of cards (must be even)
-const totalCards = 16; 
-// Array to hold the cards
-const cards = []; 
+const bcrypt = require('bcryptjs');
+const session = require('express-session');
 
-// Set EJS as the view engine
-app.set('view engine', 'ejs');
-app.set('views', __dirname + '/views'); // Set the views directory
+// Export a function that configures the app
+module.exports = function(app) {
+    // Middleware for parsing request bodies
+    app.use(bodyParser.urlencoded({ extended: true }));
+    app.use(express.json());
 
-// Set up static files directory for CSS, JS, and images
-app.use(express.static('public'));
-app.use(bodyParser.urlencoded({ extended: true }));
+    app.use(express.static('public'));
 
-// Define routes
-app.get('/', (req, res) => {
-    res.render('index', { vaultName: "MindVault" }); // Rendering index with vaultName
+
+    // Session configuration
+    app.use(session({
+        secret: 'your_secret_key', // Secret key for signing the session ID cookie
+        resave: false,            // Do not force session save
+        saveUninitialized: false, // Do not save uninitialized sessions
+        cookie: { secure: false } // True in production if using HTTPS
+    }));
+
+    // Set EJS as the view engine for rendering HTML from templates
+    app.set('view engine', 'ejs');
+
+    // MySQL connection pool setup
+    const pool = mysql.createPool({
+        host: 'localhost',  // Database server address
+        port: 3306,         // Database server port
+        user: 'root',       // Database user
+        password: 'app2027',  // Database password
+        database: 'myMindvauvaultdb',  // Database name
+        waitForConnections: true,
+        connectionLimit: 10,
+        queueLimit: 0
+    });
+
+    // Middleware to redirect users not logged in
+    const redirectLogin = (req, res, next) => {
+        if (!req.session.userId) {
+            res.redirect('/login');
+        } else {
+            next();
+        }
+    };
+
+    // Route for the home page
+    app.get('/', (req, res) => {
+        res.render('index', { title: 'Home Page' });
+    });
+
+    // Route for the about page
+    app.get('/about', (req, res) => {
+        res.render('about', { vaultName: "MindVault" });
+    });
+
+    // Route for showing the login page
+    app.get('/login', (req, res) => {
+        res.render('login', { vaultName: "MindVault" });
+    });
+
+    // Route for handling login attempts
+    app.post('/login', async (req, res) => {
+        const { username, password } = req.body;
+        try {
+            const [users] = await pool.query('SELECT * FROM users WHERE username = ?', [username]);
+            if (users.length > 0) {
+                const user = users[0];
+                if (await bcrypt.compare(password, user.password)) {
+                    req.session.userId = user.id;
+                    res.redirect('/list');
+                } else {
+                    res.send('Invalid password');
+                }
+            } else {
+                res.send('User not found');
+            }
+        } catch (error) {
+            console.error('Login error:', error);
+            res.status(500).send('Error logging in user');
+        }
+    });
+
+    // Route for the registration page
+    app.get('/register', (req, res) => {
+        res.render('register', { vaultName: "MindVault" });
+    });
+
+    // Route for handling registration submissions
+app.post('/registered', async (req, res) => {
+    const { first, last, email, username, password, country } = req.body;
+    const termsAndConditions = req.body.termsAndConditions ? true : false;
+    const hashedPassword = await bcrypt.hash(password, 8);
+    try {
+        const [result] = await pool.execute(`
+            INSERT INTO users (first_name, last_name, email, username, password, country, terms_and_conditions)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        `, [first, last, email, username, hashedPassword, country, termsAndConditions]);
+
+        res.render('registered', { userFirstName: first }); // Render the registered page with the user's first name
+    } catch (error) {
+        console.error('Failed to register user:', error);
+        res.status(500).send('Failed to register user.');
+    }
 });
 
-// Render the Learn page
-module.exports = function(app, vaultData) {
-    // Define routes here
-// Render the Learn page
-app.get('/about', function(req, res) {
-    res.render('about', { vaultName: "MindVault" }); 
-});
-;
-app.get('/register', function(req, res) {
-    res.render('register', { vaultName: "MindVault" }); 
-});
 
-app.post('/registered', (req, res) => {
-    // Extract data from the request body
-    const { username, email, password } = req.body;
-
-    // Assuming you have some logic to process the registration data here
-    // For now, let's just log the received data
-    console.log('Received registration data:');
-    console.log('Username:', username);
-    console.log('Email:', email);
-    console.log('Password:', password);
-
-    // Send a response back to the client
-    res.send('Registration successful!'); 
-});
-
-app.get('/login', function(req, res) {
-    res.render('login', { vaultName: "MindVault" }); 
-});
-
-}
-
-
-// Start the server
-app.listen(port, () => {
-    console.log(`Server is listening at http://localhost:${port}`);
-});
+    // Protected route for the list page
+    app.get('/list', redirectLogin, (req, res) => {
+        res.send("This is the list page, visible only to logged-in users.");
+    });
+};

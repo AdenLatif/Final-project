@@ -2,13 +2,25 @@ const express = require('express');
 const app = express();
 const port = 3000;
 const path = require('path');
+var session = require ('express-session');
+
+// Define vaultData
+const vaultData = { vaultName: "MindVault" };
+
 
 // Set up EJS
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Define our data
-var vaultData = {vaultName: "MindVault"};
+app.use(session({
+  secret: 'somerandomstuff',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+      expires: 600000
+  }
+}));
+
 
 // Define routes
 app.get('/', (req, res) => {
@@ -16,7 +28,7 @@ app.get('/', (req, res) => {
 });
 
 // Include routes from routes/main.js
-require("./routes/main")(app, vaultData);
+require('./routes/main')(app);
 
 // Start server
 app.listen(port, () => {
