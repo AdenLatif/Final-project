@@ -115,6 +115,16 @@ module.exports = function(app) {
             res.status(500).send('Failed to register user.');
         }
     });
+
+    app.get('/logout', (req, res) => {
+        req.session.destroy((err) => {
+            if (err) {
+                return console.error('Logout failed', err);
+            }
+            res.render('logout'); // Render the logout page with a timed redirect
+        });
+    });
+    
     
 
 
