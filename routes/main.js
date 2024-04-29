@@ -1,6 +1,6 @@
 // Import necessary modules
 const express = require('express');
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
 const session = require('express-session');
@@ -70,7 +70,7 @@ module.exports = function(app) {
                 const user = users[0];
                 if (await bcrypt.compare(password, user.password)) {
                     req.session.userId = user.id;
-                    res.redirect('/list');
+                    res.redirect('/loggedin'); // Redirect to loggedin page
                 } else {
                     res.send('Invalid password');
                 }
@@ -82,6 +82,16 @@ module.exports = function(app) {
             res.status(500).send('Error logging in user');
         }
     });
+    
+    // Route for loggedin.ejs
+    app.get('/loggedin', (req, res) => {
+        res.render('loggedin');
+    });
+    
+    // Route for game.ejs
+    app.get('/game', (req, res) => {
+        res.render('game');
+    });
 
     // Route for the registration page
     app.get('/register', (req, res) => {
@@ -89,26 +99,27 @@ module.exports = function(app) {
     });
 
     // Route for handling registration submissions
-app.post('/registered', async (req, res) => {
-    const { first, last, email, username, password, country } = req.body;
-    const termsAndConditions = req.body.termsAndConditions ? true : false;
-    const hashedPassword = await bcrypt.hash(password, 8);
-    try {
-        const [result] = await pool.execute(`
-            INSERT INTO users (first_name, last_name, email, username, password, country, terms_and_conditions)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-        `, [first, last, email, username, hashedPassword, country, termsAndConditions]);
-
-        res.render('registered', { userFirstName: first }); // Render the registered page with the user's first name
-    } catch (error) {
-        console.error('Failed to register user:', error);
-        res.status(500).send('Failed to register user.');
-    }
-});
+    app.post('/registered', async (req, res) => {
+        const { first, last, email, username, password, country } = req.body;
+        const termsAndConditions = req.body.termsAndConditions ? true : false;
+        const hashedPassword = await bcrypt.hash(password, 8);
+        try {
+            const result = await pool.execute(`
+                INSERT INTO users (first_name, last_name, email, username, password, country, terms_and_conditions)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            `, [first, last, email, username, hashedPassword, country, termsAndConditions]);
+            console.log(result);
+            res.render('registered', { userFirstName: first });
+        } catch (error) {
+            console.error('Failed to register user:', error);
+            res.status(500).send('Failed to register user.');
+        }
+    });
+    
 
 
     // Protected route for the list page
-    app.get('/list', redirectLogin, (req, res) => {
-        res.send("This is the list page, visible only to logged-in users.");
+    app.get('/loggedin', redirectLogin, (req, res) => {
+        res.send("This is the loggedin page, visible only to logged-in users.");
     });
 };

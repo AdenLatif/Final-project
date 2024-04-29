@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="10;url=/game"> <!-- Extended time for exploring the page -->
+    <title>Welcome to Your Dashboard</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Welcome!</h1>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="/profile">Profile</a></li>
+            <li><a href="/logout">Logout</a></li>
+        </ul>
+    </nav>
+    <main>
+        <section id="messageSection">
+            <p>You are now logged in. You will be redirected to the game in a few seconds...</p>
+            <button onclick="cancelRedirect()">Cancel Redirect</button>
+        </section>
+        <section id="newsSection">
+            <h2>Latest Updates</h2>
+            <p>Check out the latest news about our platform updates and events.</p>
+        </section>
+    </main>
+    <footer>
+        <p>© 2024 Your Company Name. All rights reserved.</p>
+    </footer>
+
+    <script src="/scripts/loggedin.js"></script>
+</body>
+</html>
