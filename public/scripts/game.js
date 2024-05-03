@@ -1,35 +1,49 @@
 document.addEventListener('DOMContentLoaded', () => {
     const gameBoard = document.getElementById('gameBoard');
-    const colorSequenceBoard = document.getElementById('colorSequence');
-    const startColorGameButton = document.getElementById('startColorGame');
     const livesCountEl = document.getElementById('livesCount');
-    const colors = ['red', 'blue', 'green', 'yellow'];
-    let symbols = ['🌀', '🌀', '⚛️', '⚛️', '🔥', '🔥', '🌟', '🌟'];
-    let sequence = [];
+    let symbols = ['🌀', '⚛️', '🔥', '🌟']; 
+    let currentSymbols = []; 
     let flippedCards = [];
     let matchedCards = 0;
     let currentLevel = 1;
     let lives = 5;
-    // initializes the game
+
+    // Initializes the game
     function initializeGame() {
         gameBoard.innerHTML = '';
-        colorSequenceBoard.innerHTML = '';
-        document.getElementById('colorGame').style.display = 'none';
         document.getElementById('gameBoard').style.display = 'block';
-        symbols = symbols.slice(0, 8);
-        symbols.sort(() => 0.5 - Math.random());
-        lives = 5;
+        configureGameLevel();
         livesCountEl.textContent = lives;
         matchedCards = 0;
         flippedCards = [];
         createCards();
-        if (currentLevel > 1) {
-            startColorGame();
+    }
+
+    // Configures the game based on the current level
+    function configureGameLevel() {
+        if (currentLevel === 1) {
+            currentSymbols = [...symbols, ...symbols]; // Duplicate each symbol to ensure pairs
+            shuffleSymbols();
+            lives = 5;
+        } else if (currentLevel === 2) {
+            // Add additional symbols for more complexity in level 2
+            currentSymbols = [...symbols, '💠', , ...symbols, '💠',];
+            shuffleSymbols();
+            lives = 5; 
         }
     }
-    // creates the cards, each with a symbol
+
+    // Shuffles the symbols array to randomize the board
+    function shuffleSymbols() {
+        for (let i = currentSymbols.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [currentSymbols[i], currentSymbols[j]] = [currentSymbols[j], currentSymbols[i]];
+        }
+    }
+
+    // Creates the cards, each with a symbol
     function createCards() {
-        symbols.forEach(symbol => {
+        currentSymbols.forEach(symbol => {
             const card = document.createElement('div');
             card.classList.add('card');
             card.dataset.symbol = symbol;
@@ -41,45 +55,50 @@ document.addEventListener('DOMContentLoaded', () => {
             gameBoard.appendChild(card);
         });
     }
-    // when the user presses on a card, the card flips
+
+    // When the user presses on a card, the card flips
     function flipCard(card) {
         card.classList.add('flipped');
         card.textContent = card.dataset.symbol;
         flippedCards.push(card);
         if (flippedCards.length === 2) {
-            checkForMatch();
+            setTimeout(checkForMatch, 1000);
         }
     }
-    // checks for the card match
+
+    // Checks for the card match
     function checkForMatch() {
         const [card1, card2] = flippedCards;
         if (card1.dataset.symbol === card2.dataset.symbol) {
             handleMatch();
         } else {
-            setTimeout(() => handleNoMatch(card1, card2), 1000);
+            handleNoMatch();
         }
     }
-    // the user has to match 2 of the same symbol cards
+
+    // Handles a successful match
     function handleMatch() {
         matchedCards += 2;
         flippedCards.forEach(card => card.classList.add('match'));
         flippedCards = [];
-        if (matchedCards === symbols.length) {
+        if (matchedCards === currentSymbols.length) {
             alert(`Level ${currentLevel} completed!`);
             currentLevel++;
             initializeGame();
         }
     }
-    // if the cards flipped match, they stay flipped, however if they do not, the user loses a life
-    function handleNoMatch(card1, card2) {
-        card1.classList.remove('flipped', 'match');
-        card2.classList.remove('flipped', 'match');
-        card1.textContent = '';
-        card2.textContent = '';
+
+    // Handles an unsuccessful match
+    function handleNoMatch() {
+        flippedCards.forEach(card => {
+            card.classList.remove('flipped', 'match');
+            card.textContent = '';
+        });
         flippedCards = [];
         loseLife();
     }
-    // if all lives are lost, the user is given to option to restart the game from the first level
+
+    // Decreases the lives count and checks for game over
     function loseLife() {
         lives--;
         livesCountEl.textContent = lives;
@@ -90,45 +109,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     }
-        //second game starts, colour recall game
-    function startColorGame() {
-        document.getElementById('gameBoard').style.display = 'none';
-        document.getElementById('colorGame').style.display = 'block';
-        addColorToSequence();
-    }
-    //make sure the start game button works
-    startColorGameButton.addEventListener('click', startColorGame);
-
-
-        //sequence of colours
-    function addColorToSequence() {
-        sequence.push(colors[Math.floor(Math.random() * colors.length)]);
-        flashColors(sequence);
-    }
-
-    function flashColors(sequence) {
-        colorSequenceBoard.innerHTML = '';  
-        sequence.forEach((color, index) => {
-            setTimeout(() => {
-                const colorDiv = document.createElement('div');
-                colorDiv.className = 'color';
-                colorDiv.style.backgroundColor = color;
-                colorDiv.dataset.color = color;
-                colorSequenceBoard.appendChild(colorDiv);
-                setTimeout(() => colorDiv.remove(), 500);
-            }, 1000 * index);
-        });
-    }
-
-    colorSequenceBoard.addEventListener('click', (e) => {
-        const colorClicked = e.target.dataset.color;
-        if (colorClicked === sequence[sequence.length - 1]) {
-            alert('Correct sequence! Next level starting.');
-            addColorToSequence();
-        } else {
-            loseLife();
-        }
-    });
 
     initializeGame();
 });
