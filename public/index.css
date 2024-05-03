@@ -1,4 +1,4 @@
-/* General body styles */
+
 body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     background-color: #f4f4f4;
@@ -7,14 +7,14 @@ body {
     color: #333;
 }
 
-/* Header styles */
+
 header {
     color: #ca0fbb;
     text-align: center;
     margin-bottom: 30px;
 }
 
-/* Content container */
+
 .content {
     display: flex;
     justify-content: space-around;
@@ -22,7 +22,7 @@ header {
     margin: 20px;
 }
 
-/* Card styling for each section */
+
 .card {
     background: white;
     width: 30%;
@@ -52,7 +52,7 @@ header {
     text-decoration: underline;
 }
 
-/* Responsive adjustments */
+
 @media (max-width: 768px) {
     .content {
         flex-direction: column;
@@ -64,9 +64,9 @@ header {
 }
 
 
-/*about me page
+/*about me page*/
 
-/* General body and font styles */
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f0f0f0;
@@ -75,7 +75,7 @@ body {
     padding: 20px;
 }
 
-/* Header styles */
+
 header {
     background-color: #4A90E2;
     color: #fff;
@@ -88,7 +88,7 @@ h1 {
     font-size: 24px;
 }
 
-/* Styling the section containing the about text */
+
 .about-container {
     background-color: #fff;
     border-radius: 8px;
@@ -104,9 +104,9 @@ h1 {
 }
 
 
-/* register.ejs
+/* register.ejs*/
 
-/* Basic resets */
+
 body, html {
     margin: 0;
     padding: 0;
@@ -130,7 +130,7 @@ section {
     border-radius: 10px;
 }
 
-/* Styling form elements for neat and inviting look */
+
 form {
     display: grid;
     grid-template-columns: 1fr;
@@ -181,7 +181,7 @@ a:hover {
     text-decoration: underline;
 }
 
-/* Error message styling */
+
 #passwordError {
     font-size: 0.9em;
 }
@@ -192,7 +192,7 @@ a:hover {
     }
 
     label {
-        grid-column: 1 / -1; /* Make labels take full width on small screens */
+        grid-column: 1 / -1; 
     }
 
     input[type="submit"] {
@@ -200,16 +200,16 @@ a:hover {
     }
 }
 
-/* login.ejs
+/* login.ejs*/
 
-/* Reset only within the login container */
+
 .login-container * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* Specific styling for login page within its namespace */
+
 .login-container {
     font-family: 'Arial', sans-serif;
     background: linear-gradient(135deg, #73a5ff, #5477f5);
@@ -267,7 +267,7 @@ a:hover {
     background-color: #357ABD;
 }
 
-/* Responsive design adjustments */
+
 @media (max-width: 600px) {
     .login-container .form-wrapper {
         padding: 30px;
