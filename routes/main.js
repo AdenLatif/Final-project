@@ -1,4 +1,3 @@
-// Import necessary modules
 const express = require('express');
 const mysql = require('mysql2/promise');
 const bodyParser = require('body-parser');
@@ -124,7 +123,7 @@ module.exports = function(app) {
             res.render('logout'); // Render the logout page with a timed redirect
         });
     });
-    
+
     
 
 

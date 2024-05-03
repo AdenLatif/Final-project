@@ -3,15 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Page</title>
+    <title>Game Page - MindVault</title>
     <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
     <header>
-        <h1>Game Time!</h1>
+        <h1>Game Time - Unlock your MindVault!</h1>
+        <p>Lives Left: <span id="livesCount">5</span></p>
     </header>
     <main>
-        <p>Welcome to the game!</p>
+        <div id="gameBoard" class="game-board"></div>
+        <div id="colorGame" style="display: none;">
+            <h2>Color Sequence Game</h2>
+            <div id="colorSequence" class="color-sequence"></div>
+            <button id="startColorGame">Start Color Game</button>
+
+        </div>
     </main>
+    <script src="/scripts/game.js"></script>
 </body>
 </html>

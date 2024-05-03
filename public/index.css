@@ -1,3 +1,68 @@
+/* General body styles */
+body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+}
+
+/* Header styles */
+header {
+    color: #ca0fbb;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* Content container */
+.content {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin: 20px;
+}
+
+/* Card styling for each section */
+.card {
+    background: white;
+    width: 30%;
+    padding: 20px;
+    margin: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.card h2 {
+    color: #055ed3;
+}
+
+.card a {
+    color: #ca0fbb;
+    transition: color 0.3s ease;
+}
+
+.card a:hover {
+    color: #055ed3;
+    text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .content {
+        flex-direction: column;
+    }
+    .card {
+        width: 100%;
+        margin: 10px auto;
+    }
+}
+
 
 /*about me page
 
@@ -208,56 +273,3 @@ a:hover {
         padding: 30px;
     }
 }
-
-
-/* game css*/
-
-.game-board {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); /* More responsive grid */
-    gap: 10px;
-    max-width: 600px;
-    margin: auto;
-}
-
-.card {
-    background-color: #444;
-    height: 70px; /* Smaller cards for more items */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.5rem; /* Adjust font size */
-    color: #fff;
-    cursor: pointer;
-    border-radius: 8px;
-}
-
-
-.card.flipped {
-    background-color: #09f;
-}
-
-
-.color-sequence {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-}
-
-.color-sequence div {
-    width: 50px;
-    height: 50px;
-    margin: 5px;
-    display: inline-block;
-    cursor: pointer;
-}
-
-.color-sequence div:hover {
-    opacity: 0.7;
-}
-
-
-
-
-
-
