@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentLevel = 1;
     let lives = 5;
 
-    // Initializes the game
+    // initializes the game
     function initializeGame() {
         gameBoard.innerHTML = '';
         document.getElementById('gameBoard').style.display = 'block';
@@ -19,15 +19,15 @@ document.addEventListener('DOMContentLoaded', () => {
         createCards();
     }
 
-    // Configures the game based on the current level
+    //configures the game based on the current level
     function configureGameLevel() {
         if (currentLevel === 1) {
             currentSymbols = [...symbols, ...symbols]; // Duplicate each symbol to ensure pairs
             shuffleSymbols();
             lives = 5;
         } else if (currentLevel === 2) {
-            // Add additional symbols for more complexity in level 2
-            currentSymbols = [...symbols, '💠', , ...symbols, '💠',];
+            // additional symbols for more complexity in level 2
+            currentSymbols = [...symbols, '💠' , ...symbols, '💠'];
             shuffleSymbols();
             lives = 5; 
         }
